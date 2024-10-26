@@ -50,5 +50,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<finalName>github-cicd-test</finalName>
 </project>
