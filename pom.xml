@@ -47,8 +47,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<finalName>github-cicd-test</finalName> <!-- Correct placement -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	<finalName>github-cicd-test</finalName>
 </project>
