@@ -47,6 +47,11 @@ jobs:
         with:
           name: built-jar
 
+      - name: Create Target Directory
+        run: |
+          mkdir -p target
+          cp github-cicd-test.jar target/ # Ensure the JAR is in the target directory
+
       - name: Build Docker image
         run: |
           docker build -t adityaramachandran/github-cicd-test .
