@@ -1,11 +1,3 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Test CICD Project
 
 on:
@@ -40,10 +32,11 @@ jobs:
           name: built-jar
           path: target/github-cicd-test.jar
 
-  dependency-scan:
+  docker-build:
+    # Stage 2: Build Docker Image
     runs-on: ubuntu-latest
     needs: build
-    name: Run Dependency-Check
+    name: Build Docker Image
 
     steps:
       - name: Checkout code
@@ -54,42 +47,52 @@ jobs:
         with:
           name: built-jar
 
-      - name: List Directory Contents
+      - name:  Create Target Directory
         run: |
-          echo "Listing contents of the working directory:"
-          ls -R target
+          mkdir -p target
+          mv github-cicd-test.jar target/
 
-      - name: Pull OWASP Dependency-Check Docker Image
+#      - name: List Target Directory Contents
+#        run: |
+#          echo "Listing contents of the target directory:"
+#          ls -l target/
+
+      - name: Build Docker image
         run: |
-          docker pull owasp/dependency-check
+          docker build -t adityaramachandran/github-cicd-test .
 
-      - name: Run Dependency-Check in Docker
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/src --workdir /src \
-            owasp/dependency-check --project github-cicd-test --scan target/github-cicd-test.jar --format HTML --out dependency-check-report.html
+  trivy-scan:
+    # Stage 3: Run Trivy Scan
+    runs-on: ubuntu-latest
+    needs: docker-build
+    name: Run Trivy Scan
 
-      - name: Upload Dependency-Check Report
-        uses: actions/upload-artifact@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Built Jar Artifact
+        uses: actions/download-artifact@v3
         with:
-          name: dependency-check-report
-          path: dependency-check-report.html
+          name: built-jar
+
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          trivy-config: 'trivy.yaml'
 
   docker-publish:
-    # Stage 3: Build & Push Docker Image
-    if: success() || failure() && github.ref == 'refs/heads/master'
+    # Stage 4: Publish Docker Image
+    if: success() || failure() && github.ref == 'refs/heads/master' # Only run if on the master branch
     runs-on: ubuntu-latest
-    needs: dependency-scan
-    name: Build and Push Docker Image
+    needs: trivy-scan
+    name: Publish Docker Image
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Download Built Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: built-jar
-          path: target/github-cicd-test.jar
 
       - name: Build & Push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
@@ -100,4 +103,3 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
