@@ -52,7 +52,7 @@ jobs:
           echo "Listing contents of the current directory:"
           ls -l
           echo "Listing contents of the target directory:"
-          ls -l target
+          pwd
 
       - name: Create Target Directory
         run: |
