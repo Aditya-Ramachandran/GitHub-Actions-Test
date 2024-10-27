@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the built jar file into the container
-COPY target/github-cicd-test.jar app.jar
+COPY github-cicd-test.jar app.jar
 
 # Expose the application port (default Spring Boot port is 8080)
 EXPOSE 8080
