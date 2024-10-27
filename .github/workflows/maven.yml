@@ -54,23 +54,10 @@ jobs:
         with:
           name: built-jar
 
-      - name: Install dependencies
+      - name: Run Dependency-Check in Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl wget unzip
-
-      - name: Install OWASP Dependency-Check
-        run: |
-          # Download Dependency-Check using curl
-          curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip -o dependency-check.zip
-          unzip dependency-check.zip -d /usr/local/dependency-check
-          rm dependency-check.zip
-        env:
-          PATH: "/usr/local/dependency-check/dependency-check/bin:$PATH"
-
-      - name: Run OWASP Dependency-Check
-        run: |
-          /usr/local/dependency-check/dependency-check/bin/dependency-check.sh --project github-cicd-test --scan target/github-cicd-test.jar --format HTML --out dependency-check-report.html
+          docker run --rm -v ${{ github.workspace }}:/src --workdir /src \
+            owasp/dependency-check --project github-cicd-test --scan target/github-cicd-test.jar --format HTML --out dependency-check-report.html
 
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v3
