@@ -54,6 +54,11 @@ jobs:
         with:
           name: built-jar
 
+      - name: List Directory Contents
+        run: |
+          echo "Listing contents of the working directory:"
+          ls -R target
+
       - name: Pull OWASP Dependency-Check Docker Image
         run: |
           docker pull owasp/dependency-check
@@ -69,7 +74,6 @@ jobs:
           name: dependency-check-report
           path: dependency-check-report.html
   
-
   docker-publish:
     # Stage 3: Build & Push Docker Image
     runs-on: ubuntu-latest
