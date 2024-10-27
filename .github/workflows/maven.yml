@@ -58,11 +58,16 @@ jobs:
       - name: Install OWASP Dependency-Check
         run: |
           curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip -o dependency-check.zip
-          unzip dependency-check.zip -d dependency-check
-          sudo ln -s $(pwd)/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
+          unzip dependency-check.zip -d /usr/local/dependency-check
+          rm dependency-check.zip
+        # Adds Dependency-Check to the PATH for easier access
+        shell: bash
+        env:
+          PATH: "/usr/local/dependency-check/dependency-check/bin:$PATH"
 
       - name: Run OWASP Dependency-Check
-        run: dependency-check --project github-cicd-test --scan target/github-cicd-test.jar --format HTML --out dependency-check-report.html
+        run: |
+          /usr/local/dependency-check/dependency-check/bin/dependency-check.sh --project github-cicd-test --scan target/github-cicd-test.jar --format HTML --out dependency-check-report.html
 
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v3
