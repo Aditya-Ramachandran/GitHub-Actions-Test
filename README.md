@@ -1,3 +1,5 @@
+[![Test CICD Project](https://github.com/Aditya-Ramachandran/GitHub-Actions-Test/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/Aditya-Ramachandran/GitHub-Actions-Test/actions/workflows/maven.yml)
+
 # GitHub-Actions-Test
 A repository for experimenting with GitHub Actions workflows tailored for personal projects. Use this space to test, refine, and learn about different automation possibilities with GitHub Actions.
 
