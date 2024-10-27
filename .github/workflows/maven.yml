@@ -47,10 +47,15 @@ jobs:
         with:
           name: built-jar
 
-      - name: List Target Directory Contents
+      - name:  Create Target Directory
         run: |
-          echo "Listing contents of the target directory:"
-          ls -l target/
+          mkdir -p target
+          mv github-cicd-test.jar target/
+
+#      - name: List Target Directory Contents
+#        run: |
+#          echo "Listing contents of the target directory:"
+#          ls -l target/
 
       - name: Build Docker image
         run: |
