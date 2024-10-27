@@ -57,7 +57,7 @@ jobs:
 
       - name: Install OWASP Dependency-Check
         run: |
-          curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip -o dependency-check.zip
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.0/dependency-check-6.5.0-release.zip -O dependency-check.zip
           unzip dependency-check.zip -d /usr/local/dependency-check
           rm dependency-check.zip
         # Adds Dependency-Check to the PATH for easier access
