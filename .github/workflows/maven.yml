@@ -54,6 +54,10 @@ jobs:
         with:
           name: built-jar
 
+      - name: Pull OWASP Dependency-Check Docker Image
+        run: |
+          docker pull owasp/dependency-check
+
       - name: Run Dependency-Check in Docker
         run: |
           docker run --rm -v ${{ github.workspace }}:/src --workdir /src \
@@ -64,6 +68,7 @@ jobs:
         with:
           name: dependency-check-report
           path: dependency-check-report.html
+  
 
   docker-publish:
     # Stage 3: Build & Push Docker Image
