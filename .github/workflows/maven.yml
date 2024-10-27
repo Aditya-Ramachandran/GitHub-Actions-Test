@@ -76,7 +76,7 @@ jobs:
 
   docker-publish:
     # Stage 3: Build & Push Docker Image
-    if: success() || failure()
+    if: success() || failure() && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     needs: dependency-scan
     name: Build and Push Docker Image
