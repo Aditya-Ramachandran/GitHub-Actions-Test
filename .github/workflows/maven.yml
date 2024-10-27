@@ -73,9 +73,10 @@ jobs:
         with:
           name: dependency-check-report
           path: dependency-check-report.html
-  
+
   docker-publish:
     # Stage 3: Build & Push Docker Image
+    if: success() || failure()
     runs-on: ubuntu-latest
     needs: dependency-scan
     name: Build and Push Docker Image
