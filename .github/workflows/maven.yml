@@ -50,7 +50,7 @@ jobs:
       - name:  Create Target Directory
         run: |
           mkdir -p target
-          mv github-cicd-test.jar target/
+          cp -r  github-cicd-test.jar target/
 
 #      - name: List Target Directory Contents
 #        run: |
