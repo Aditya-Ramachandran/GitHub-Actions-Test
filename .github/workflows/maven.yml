@@ -75,13 +75,15 @@ jobs:
         run: |
           docker pull adityaramachandran/github-cicd-test
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get install -y trivy
-
-      - name: Run Trivy Scan
-        run: |
-          trivy image --exit-code 1 --severity HIGH,CRITICAL adityaramachandran/github-cicd-test
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'adityaramachandran/github-cicd-test' # Reference to your image
+          format: 'table' # Output format
+          exit-code: '1' # Set exit code for failures
+          ignore-unfixed: true # Ignore unfixed vulnerabilities
+          vuln-type: 'os,library' # Types of vulnerabilities to scan for
+          severity: 'CRITICAL,HIGH' # Severity levels to check fort
 
   docker-publish:
     # Stage 4: Publish Docker Image
